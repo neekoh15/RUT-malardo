@@ -147,6 +147,11 @@ export const domiciliosRegistrados = ref(
     }
 ]
 )
+
+export const domicilioOriginal = domiciliosRegistrados.value[0]
+
+export const onJuridiscciones = ref(false)
+
 export const useDomiciliosStore = defineStore('domicilios', {
     state: () => ({
 

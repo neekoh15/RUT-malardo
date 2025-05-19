@@ -27,7 +27,7 @@
       <div class="steps">
         <div class="hr"></div>
         <div class="step"  v-for="step in steps">
-          <div class="step__number" :class="{seleccionado: step.seleccionado}">{{ step.number }}</div>
+          <div class="step__number" :class="{seleccionado: step.seleccionado || (onJuridiscciones && step.number == 2)}">{{ step.number }}</div>
 
           <div class="step__name" :class="{text_seleccionado: step.seleccionado}">
             {{ step.name }}
@@ -39,7 +39,10 @@
 </template>
 
 <script setup>
-const steps = [
+import { onJuridiscciones } from '@/stores/domicilios';
+import { ref } from 'vue';
+
+const steps = ref([
   {
     number: 1,
     name: "Domicilios",
@@ -48,6 +51,7 @@ const steps = [
   {
     number: 2,
     name: "Jurisdicciones",
+    seleccionado: onJuridiscciones.value
   },
   {
     number: 3,
@@ -65,7 +69,7 @@ const steps = [
     number: 6,
     name: "Constancias",
   },
-];
+]);
 </script>
 
 <style scoped>

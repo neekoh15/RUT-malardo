@@ -30,28 +30,55 @@
               </button>
             </div>
 
-            <p>
-              {{ domicilios.domicilioFiscal.calle }}
-              {{ domicilios.domicilioFiscal.numero }}
-              ({{ domicilios.domicilioFiscal.cp }}),
-              {{
-                domicilios.domicilioFiscal.piso
-                  ? `Piso ${domicilios.domicilioFiscal.piso},`
-                  : ""
-              }}
-              {{
-                domicilios.domicilioFiscal.localidad ==
-                "CIUDAD AUTÓNOMA DE BUENOS AIRES"
-                  ? "CABA"
-                  : ""
-              }},
-              {{
-                domicilios.domicilioFiscal.provincia ==
-                "CIUDAD AUTÓNOMA DE BUENOS AIRES"
-                  ? "CABA"
-                  : ""
-              }}
-            </p>
+            <div
+              :class="{
+                domAlert: !isEqual(
+                  domicilioOriginal,
+                  domicilios.domicilioFiscal
+                ),
+              }"
+              style="margin-block: 0.5rem"
+            >
+              <img
+                src="/icons/icon__alert_domicilio.svg"
+                alt="alert_domicilio"
+                v-if="!isEqual(domicilioOriginal, domicilios.domicilioFiscal)"
+              />
+              <div>
+                <p>
+                  <b
+                    >{{ domicilios.domicilioFiscal.calle }}
+                    {{ domicilios.domicilioFiscal.numero }}
+                    ({{ domicilios.domicilioFiscal.cp }}),
+                    {{
+                      domicilios.domicilioFiscal.piso
+                        ? `Piso ${domicilios.domicilioFiscal.piso},`
+                        : ""
+                    }}
+                    {{
+                      domicilios.domicilioFiscal.localidad ==
+                      "CIUDAD AUTÓNOMA DE BUENOS AIRES"
+                        ? "CABA"
+                        : ""
+                    }},
+                    {{
+                      domicilios.domicilioFiscal.provincia ==
+                      "CIUDAD AUTÓNOMA DE BUENOS AIRES"
+                        ? "CABA"
+                        : ""
+                    }}</b
+                  >
+                </p>
+
+                <p
+                  v-if="!isEqual(domicilioOriginal, domicilios.domicilioFiscal)"
+                >
+                  Para completar la modificación del domicilio fiscal tenés que
+                  avanzar hasta confirmar los pasos 2-Jurisdicciones y
+                  3-Actividades.
+                </p>
+              </div>
+            </div>
 
             <div class="input__select">
               <b>Tipo de domicilio provincial</b>
@@ -141,7 +168,8 @@
 
       <div class="section__actions">
         <button class="b__terciary">VOLVER</button
-        ><button class="b__secundary">SIGUIENTE</button>
+        ><RouterLink to="/jurisdicciones"> 
+          <button class="b__secundary">SIGUIENTE</button></RouterLink>
       </div>
     </section>
 
@@ -328,7 +356,11 @@
 
             <div class="tipo__domicilio fcol">
               <div class="input__select">
-                <b>Tipo de domicilio provincial</b>
+                <div style="display: flex; align-items: center; gap: 0.5rem">
+                  <b>Tipo de domicilio provincial * </b>
+                  <img src="/icons/icon__info2.svg" alt="" />
+                </div>
+
                 <div>
                   <div class="multi__select" @click="openSelect(1)">
                     <div class="seleccionados">
@@ -459,25 +491,32 @@
       >
         <div class="popup__contenido">
           <div class="popup__title">
-            <h5>Cambiar domicilio fiscal</h5>
+            <h5>Modificar domicilio fiscal</h5>
           </div>
           <p>
-            Estás por <b>cambiar el domicilio fiscal</b> de
+            Estás por modificar el <b>domicilio fiscal</b> de
             {{ datosDomicilio.calle }} {{ datosDomicilio.numero }}
-            {{ datosDomicilio.localidad =='CIUDAD AUTÓNOMA DE BUENOS AIRES'? 'CABA': datosDomicilio.localidad}} por
+            {{
+              datosDomicilio.localidad == "CIUDAD AUTÓNOMA DE BUENOS AIRES"
+                ? "CABA"
+                : datosDomicilio.localidad
+            }}
+            por
             <b>
               {{ domicilioSeleccionado.calle }}
               {{ domicilioSeleccionado.numero }}
-              {{ domicilioSeleccionado.localidad=='CIUDAD AUTÓNOMA DE BUENOS AIRES'? 'CABA': domicilioSeleccionado.localidad }}
+              {{
+                domicilioSeleccionado.localidad ==
+                "CIUDAD AUTÓNOMA DE BUENOS AIRES"
+                  ? "CABA"
+                  : domicilioSeleccionado.localidad
+              }}
             </b>
           </p>
 
           <p>
-            Tené en cuenta que
-            <b
-              >para completar el cambio de domicilio fiscal tenés que confirmar
-              tus jurisdicciones y actividades.</b
-            >
+            Tené en cuenta que para completar el cambio de domicilio fiscal
+            tenés que <b>confirmar tus jurisdicciones y actividades.</b>
           </p>
         </div>
 
@@ -547,7 +586,11 @@ import {
   domiciliosRegistrados,
   tipoDatoAdicional,
   emptyDomicilio,
+  domicilioOriginal,
+  onJuridiscciones
 } from "@/stores/domicilios.js";
+
+onJuridiscciones.value = false
 
 const panel = ref("domicilios");
 
@@ -782,6 +825,7 @@ section.modificar__domicilio {
 }
 
 .popup__contenido .popup__title {
+  color: var(--vt-c-main);
   border-bottom: 1px solid #ccc;
   padding-bottom: 1rem;
 }
@@ -806,6 +850,17 @@ section.modificar__domicilio {
   background-color: #e7f5fb;
   color: var(--vt-c-main);
   margin-block: 1rem 0.5rem;
+}
+
+.domAlert {
+  background-color: #fef2de;
+  border: 1px solid #93600b;
+  display: flex;
+  padding-inline: 0.5rem;
+  gap: 0.5rem;
+  padding-block: 0.3rem;
+  border-radius: 4px;
+  color: #93600b;
 }
 
 @media (max-width: 1280px) {
